@@ -54,20 +54,41 @@ public class Computer : IDisposable
 
     public void Dispose()
     {
-        foreach (IRAM ram in rams)
+        Dispose(true);
+    }
+  
+    public void TurnOffDevices()
+    {
+        if(!disposed)
         {
-            ram.Disable();
-        }
+            if(disposing)
+            {
+                foreach (IRAM ram in rams)
+                {
+                    ram.Disable();
+                    ram.Eject();
+                }
 
-        foreach (IHardDrive hardDrive in hardDrives)
-        {
-            hardDrive.Disable();
-        }
+                foreach (IHardDrive hardDrive in hardDrives)
+                {
+                    hardDrive.Disable();
+                    hardDrive.Remove();
+                }
 
-        if (processor != null)
-        {
-            processor.Disable();
+                if (processor != null)
+                {
+                    processor.Disable();
+                    processor.Unplug();
+                }
+            }
+
+            dosposed = true;
         }
+        
+    }
+    ~Computer()
+    {
+        Dispose(false);
     }
 }
 
